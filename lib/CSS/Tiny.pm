@@ -4,7 +4,7 @@ use strict;
 
 use vars qw{$VERSION $errstr};
 BEGIN {
-	$VERSION = 1.03;
+	$VERSION = 1.04;
 	$errstr = '';
 }
 
@@ -53,7 +53,7 @@ sub read_string {
 
 		# Split into properties
 		foreach ( grep { /\S/ } split /\;/, $2 ) {
-			unless ( /^\s*([\w._-]+)\s*:\s(.*?)\s*$/ ) {
+			unless ( /^\s*([\w._-]+)\s*:\s*(.*?)\s*$/ ) {
 				return $self->_error( "Invalid or unexpected property '$_' in style '$style'" );
 			}
 			foreach ( @styles ) { $self->{$_}->{lc $1} = $2 }
@@ -155,7 +155,7 @@ with more power, move up to CSS.pm.
 =head2 CSS Feature Support
 
 CSS::Tiny supports grouped styles of the form C<this, that { color: blue }>
-in reads correctly, ungrouping them into the hash structure. However, it will
+correctly when reading, ungrouping them into the hash structure. However, it will
 not restore the grouping should you write the file back out. In this case, an
 entry in the original file of the form
 
@@ -202,38 +202,42 @@ the key C<$CSS-E<gt>{P}-E<gt>{font-family}>.
 
 =head1 METHODS
 
-=head2 new()
+=head2 new
 
-The constructor C<new()> creates and returns an empty CSS::Tiny object.
+The constructor C<new> creates and returns an empty CSS::Tiny object.
 
-=head2 read( $filename )
+=head2 read $filename
 
-The C<read()> constructor reads a css stylesheet, and returns a new CSS::Tiny
+The C<read> constructor reads a css stylesheet, and returns a new CSS::Tiny
 object containing the properties in the file. Returns the object on success.
 Returns C<undef> on error.
 
-=head2 read_string( $string )
+=head2 read_string $string
 
-The C<read_string()> constructor reads a css stylesheet from a string.
+The C<read_string> constructor reads a css stylesheet from a string.
 Returns the object on success, and C<undef> on error.
 
-=head2 write()
+=head2 write
 
-The C<write( $filename )> generates the stylesheet for the properties, and 
+The C<write $filename> generates the stylesheet for the properties, and 
 writes it to disk. Returns true on success. Returns C<undef> on error.
 
-=head2 write_string()
+=head2 write_string
 
 Generates the stylesheet for the object and returns it as a string.
 
-=head2 errstr()
+=head2 errstr
 
 When an error occurs, you can retrieve the error message either from the
-C<$CSS::Tiny::errstr> variable, or using the C<errstr()> method.
+C<$CSS::Tiny::errstr> variable, or using the C<errstr> method.
 
 =head1 SUPPORT
 
-Contact the author
+Bugs should be reported via the CPAN bug tracker at
+
+  http://rt.cpan.org/NoAuth/ReportBug.html?Queue=CSS%3A%3ATiny
+
+For other issues, contact the author
 
 =head1 AUTHOR
 
@@ -247,7 +251,7 @@ L<CSS>, http://www.w3.org/TR/REC-CSS1
 
 =head1 COPYRIGHT
 
-Copyright (c) 2002 - 2003 Adam Kennedy. All rights reserved.
+Copyright 2002 - 2004 Adam Kennedy. All rights reserved.
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.
 

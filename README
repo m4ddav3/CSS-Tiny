@@ -43,9 +43,9 @@ DESCRIPTION
 
   CSS Feature Support
     CSS::Tiny supports grouped styles of the form "this, that { color: blue
-    }" in reads correctly, ungrouping them into the hash structure. However,
-    it will not restore the grouping should you write the file back out. In
-    this case, an entry in the original file of the form
+    }" correctly when reading, ungrouping them into the hash structure.
+    However, it will not restore the grouping should you write the file back
+    out. In this case, an entry in the original file of the form
 
     "H1, H2 { color: blue }"
 
@@ -87,32 +87,35 @@ CSS FILE SYNTAX
     the key "$CSS->{P}->{font-family}".
 
 METHODS
-  new()
-    The constructor "new()" creates and returns an empty CSS::Tiny object.
+  new
+    The constructor "new" creates and returns an empty CSS::Tiny object.
 
-  read( $filename )
-    The "read()" constructor reads a css stylesheet, and returns a new
+  read $filename
+    The "read" constructor reads a css stylesheet, and returns a new
     CSS::Tiny object containing the properties in the file. Returns the
     object on success. Returns "undef" on error.
 
-  read_string( $string )
-    The "read_string()" constructor reads a css stylesheet from a string.
+  read_string $string
+    The "read_string" constructor reads a css stylesheet from a string.
     Returns the object on success, and "undef" on error.
 
-  write()
-    The "write( $filename )" generates the stylesheet for the properties,
-    and writes it to disk. Returns true on success. Returns "undef" on
-    error.
+  write
+    The "write $filename" generates the stylesheet for the properties, and
+    writes it to disk. Returns true on success. Returns "undef" on error.
 
-  write_string()
+  write_string
     Generates the stylesheet for the object and returns it as a string.
 
-  errstr()
+  errstr
     When an error occurs, you can retrieve the error message either from the
-    $CSS::Tiny::errstr variable, or using the "errstr()" method.
+    $CSS::Tiny::errstr variable, or using the "errstr" method.
 
 SUPPORT
-    Contact the author
+    Bugs should be reported via the CPAN bug tracker at
+
+      http://rt.cpan.org/NoAuth/ReportBug.html?Queue=CSS%3A%3ATiny
+
+    For other issues, contact the author
 
 AUTHOR
             Adam Kennedy ( maintainer )
@@ -123,9 +126,9 @@ SEE ALSO
     CSS, http://www.w3.org/TR/REC-CSS1
 
 COPYRIGHT
-    Copyright (c) 2002 - 2003 Adam Kennedy. All rights reserved. This
-    program is free software; you can redistribute it and/or modify it under
-    the same terms as Perl itself.
+    Copyright 2002 - 2004 Adam Kennedy. All rights reserved. This program is
+    free software; you can redistribute it and/or modify it under the same
+    terms as Perl itself.
 
     The full text of the license can be found in the LICENSE file included
     with this module.

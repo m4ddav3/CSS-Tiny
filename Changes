@@ -1,5 +1,9 @@
 Revision history for Perl extension CSS::Tiny
 
+1.04 Wed Jan  7 2004
+	- Changed property parser to no longer require exactly one space
+	  after the colon seperate. Now allows zero or more spaces.
+
 1.02 Wed Aug 13 16:12:51 2003
 	- Applied a series of small changes to reduce the code overhead
 	  by a K or so, without changing function
