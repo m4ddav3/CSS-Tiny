@@ -13,7 +13,7 @@ use Fcntl ();
 # Set the VERSION
 use vars qw{$VERSION};
 BEGIN {
-	$VERSION = '0.1';
+	$VERSION = '0.2';
 }
 
 # Create the error string
@@ -59,7 +59,7 @@ sub read {
 	$contents =~ tr/\n\t/  /;
 	
 	# Remove C-style comments. e.g. /* comment */ 
-	$contents =~ s!/\/\*.*?\*\/!!g;
+	$contents =~ s!/\*.*?\*\/!!g;
 
 	# Split into styles
 	foreach ( grep { /\S/ } split /(?<=\})/, $contents ) {
