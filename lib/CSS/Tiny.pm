@@ -61,17 +61,17 @@ correctly when reading, ungrouping them into the hash structure. However, it wil
 not restore the grouping should you write the file back out. In this case, an
 entry in the original file of the form
 
-C<H1, H2 { color: blue }>
+    H1, H2 { color: blue }
 
 would become
 
-C<H1 { color: blue }
-H2 { color: blue }>
+    H1 { color: blue }
+    H2 { color: blue }
 
 CSS::Tiny handles nested styles of the form C<P EM { color: red }> in
 reads and writes correctly, making the property available in the form
 
-C<$CSS->{'P EM'}->{color}>
+    $CSS->{'P EM'}->{color}
 
 CSS::Tiny ignores comments of the form C</* comment */> on read correctly,
 however these comments will not be written back out to the file.
@@ -110,7 +110,7 @@ use strict;
 
 use vars qw{$VERSION $errstr};
 BEGIN {
-	$VERSION = '1.07';
+	$VERSION = '1.08';
 	$errstr  = '';
 }
 
@@ -129,8 +129,9 @@ sub new { bless {}, shift }
 =head2 read $filename
 
 The C<read> constructor reads a CSS stylesheet, and returns a new CSS::Tiny
-object containing the properties in the file. Returns the object on success.
-Returns C<undef> on error.
+object containing the properties in the file.
+
+Returns the object on success, or C<undef> on error.
 
 =cut
 
@@ -139,8 +140,8 @@ sub read {
 
 	# Check the file
 	my $file = shift or return $class->_error( 'You did not specify a file name' );
-	return $class->_error( "The file '$file' does not exist" ) unless -e $file;
-	return $class->_error( "'$file' is a directory, not a file" ) unless -f _;
+	return $class->_error( "The file '$file' does not exist" )          unless -e $file;
+	return $class->_error( "'$file' is a directory, not a file" )       unless -f _;
 	return $class->_error( "Insufficient permissions to read '$file'" ) unless -r _;
 
 	# Read the file
@@ -157,7 +158,8 @@ sub read {
 =head2 read_string $string
 
 The C<read_string> constructor reads a CSS stylesheet from a string.
-Returns the object on success, and C<undef> on error.
+
+Returns the object on success, or C<undef> on error.
 
 =cut
 
@@ -244,7 +246,7 @@ sub write_string {
 
 =head2 html
 
-The C<html> method generates the CSS, but wrapped in a C<style> html tag,
+The C<html> method generates the CSS, but wrapped in a C<style> HTML tag,
 so that it can be dropped directly onto a HTML page.
 
 =cut
@@ -252,6 +254,20 @@ so that it can be dropped directly onto a HTML page.
 sub html {
 	my $css = $_[0]->write_string or return '';
 	"<style type=\"text/css\">\n<!--\n${css}-->\n</style>";
+}
+
+=pod
+
+=head2 xhtml
+
+The C<html> method generates the CSS, but wrapped in a C<style> XHTML tag,
+so that it can be dropped directly onto an XHTML page.
+
+=cut
+
+sub xhtml {
+	my $css = $_[0]->write_string or return '';
+	"<style type=\"text/css\">\n/* <![CDATA[ */\n${css}/* ]]> */\n</style>";
 }
 
 =pod
@@ -284,7 +300,7 @@ Adam Kennedy (Maintainer), L<http://ali.as/>, cpan@ali.as
 
 =head1 SEE ALSO
 
-L<CSS>, L<http://www.w3.org/TR/REC-CSS1>
+L<CSS>, L<http://www.w3.org/TR/REC-CSS1>, L<Config::Tiny>
 
 =head1 COPYRIGHT
 

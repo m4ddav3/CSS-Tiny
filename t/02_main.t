@@ -19,7 +19,7 @@ BEGIN {
 	}
 }
 
-use Test::More tests => 26;
+use Test::More tests => 29;
 use CSS::Tiny;
 
 
@@ -141,5 +141,27 @@ is( $HTML->html . "\n", <<'END_HTML', '->html returns correct looking HTML' );
 -->
 </style>
 END_HTML
+
+
+
+
+
+#####################################################################
+# Check the XHTML generation
+
+my $XHTML = CSS::Tiny->new;
+isa_ok( $XHTML, 'CSS::Tiny' );
+is( $XHTML->xhtml, '', '->xhtml returns empty string for empty stylesheet' );
+
+$XHTML->{'.foo'}->{bar} = 1;
+is( $HTML->xhtml . "\n", <<'END_XHTML', '->xhtml returns correct looking HTML' );
+<style type="text/css">
+/* <![CDATA[ */
+.foo {
+	bar: 1;
+}
+/* ]]> */
+</style>
+END_XHTML
 
 1;

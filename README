@@ -52,16 +52,17 @@ DESCRIPTION
     However, it will not restore the grouping should you write the file back
     out. In this case, an entry in the original file of the form
 
-    "H1, H2 { color: blue }"
+        H1, H2 { color: blue }
 
     would become
 
-    "H1 { color: blue } H2 { color: blue }"
+        H1 { color: blue }
+        H2 { color: blue }
 
     CSS::Tiny handles nested styles of the form "P EM { color: red }" in
     reads and writes correctly, making the property available in the form
 
-    "$CSS-"{'P EM'}->{color}>
+        $CSS->{'P EM'}->{color}
 
     CSS::Tiny ignores comments of the form "/* comment */" on read
     correctly, however these comments will not be written back out to the
@@ -98,12 +99,14 @@ METHODS
 
   read $filename
     The "read" constructor reads a CSS stylesheet, and returns a new
-    CSS::Tiny object containing the properties in the file. Returns the
-    object on success. Returns "undef" on error.
+    CSS::Tiny object containing the properties in the file.
+
+    Returns the object on success, or "undef" on error.
 
   read_string $string
     The "read_string" constructor reads a CSS stylesheet from a string.
-    Returns the object on success, and "undef" on error.
+
+    Returns the object on success, or "undef" on error.
 
   write
     The "write $filename" generates the stylesheet for the properties, and
@@ -113,8 +116,12 @@ METHODS
     Generates the stylesheet for the object and returns it as a string.
 
   html
-    The "html" method generates the CSS, but wrapped in a "style" html tag,
+    The "html" method generates the CSS, but wrapped in a "style" HTML tag,
     so that it can be dropped directly onto a HTML page.
+
+  xhtml
+    The "html" method generates the CSS, but wrapped in a "style" XHTML tag,
+    so that it can be dropped directly onto an XHTML page.
 
   errstr
     When an error occurs, you can retrieve the error message either from the
@@ -132,7 +139,7 @@ AUTHOR
     Adam Kennedy (Maintainer), <http://ali.as/>, cpan@ali.as
 
 SEE ALSO
-    CSS, <http://www.w3.org/TR/REC-CSS1>
+    CSS, <http://www.w3.org/TR/REC-CSS1>, Config::Tiny
 
 COPYRIGHT
     Copyright 2002 - 2005 Adam Kennedy. All rights reserved. This program is
