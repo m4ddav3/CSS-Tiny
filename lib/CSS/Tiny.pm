@@ -4,7 +4,7 @@ use strict;
 
 use vars qw{$VERSION $errstr};
 BEGIN {
-	$VERSION = 1.0;
+	$VERSION = 1.01;
 	$errstr = '';
 }
 
@@ -88,8 +88,10 @@ sub write_string {
 	my $self = shift;
 	
 	# Iterate over the styles
+	# Note: We use 'reverse' in the sort to avoid a special case related
+	# to A:hover. See http://www.w3.org/TR/CSS2/selector.html#dynamic-pseudo-classes
 	my $contents = '';
-	foreach my $style ( sort keys %$self ) {
+	foreach my $style ( reverse sort keys %$self ) {
 		$contents .= "$style {\n";
 		foreach ( sort keys %{ $self->{$style} } ) {
 			$contents .= "\t$_: $self->{$style}->{$_};\n";

@@ -1,18 +1,24 @@
 Revision history for Perl extension CSS::Tiny
 
+1.01 Mon Jul 15 00:28:12 2003
+	- Changed write_string to sort in reverse order. This fixes
+	  a problem with A:hover described at the url
+	  http://www.w3.org/TR/CSS2/selector.html#dynamic-pseudo-classes
+	  Fix supplied by Blaise Barrelet
+
 1.0  Sat Dec 21 12:31:51 2002
-    - Removed locking code, and reliance on Fcntl
-    - Removed support for write modes
-    - Tightened up the code
-    - Added the read_string() method
-    - Simplified the file generator to save ops
+	- Removed locking code, and reliance on Fcntl
+	- Removed support for write modes
+	- Tightened up the code
+	- Added the read_string() method
+	- Simplified the file generator to save ops
 
 0.3  Mon Dec 09 00:27:01 2002
-       - Upgraded tests to use Test::More and compare structs
+	- Upgraded tests to use Test::More and compare structs
 
 0.2  Thu Nov 28 16:53:21 2002
-        - Regex to remove C style comments was broken
-          Fix supplied by Bjorn Svensson.
+	- Regex to remove C style comments was broken
+	  Fix supplied by Bjorn Svensson.
 
 0.1  Tue Nov 26 20:53:23 2002
 	- original version

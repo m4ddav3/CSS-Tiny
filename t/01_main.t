@@ -3,7 +3,7 @@
 # Formal testing for CSS::Tiny
 
 use strict;
-use lib '../../../modules'; # For development testing
+use lib '../../modules'; # For development testing
 use lib '../lib'; # For installation testing
 use UNIVERSAL 'isa';
 use Test::More tests => 23;
@@ -72,16 +72,16 @@ $Trivial->{'.this'} = {
 $Trivial->{'P EM'} = { color => 'red' };
 
 my $string = <<END;
-.this {
-	color: #FFFFFF;
-	font-family: Arial, "Courier New";
-	font-variant: small-caps;
+P EM {
+	color: red;
 }
 H1 {
 	color: blue;
 }
-P EM {
-	color: red;
+.this {
+	color: #FFFFFF;
+	font-family: Arial, "Courier New";
+	font-variant: small-caps;
 }
 END
 
