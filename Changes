@@ -1,5 +1,8 @@
 Revision history for Perl extension CSS::Tiny
 
+0.3  Mon Dec 09 00:27:01 2002
+       - Upgraded tests to use Test::More and compare structs
+
 0.2  Thu Nov 28 16:53:21 2002
         - Regex to remove C style comments was broken
           Fix supplied by Bjorn Svensson.

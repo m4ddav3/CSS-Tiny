@@ -6,7 +6,7 @@ use strict;
 use lib '../../../modules'; # For development testing
 use lib '../lib'; # For installation testing
 use UNIVERSAL 'isa';
-use Test::Simple tests => 19;
+use Test::More tests => 21;
 
 # Set up any needed globals
 use vars qw{$loaded};
@@ -52,7 +52,15 @@ ok( isa( $Config, 'HASH' ), '->read returns a hash reference' );
 ok( isa( $Config, 'CSS::Tiny' ), '->read returns a CSS::Tiny object' );
 
 # Check the structure of the config
-## FIXME
+my $expected = {
+	H1 => { color => 'blue' },
+	H2 => { color => 'red', 'font-height' => '16px' },
+	'P EM' => { this => 'that' },
+	'A B' => { foo => 'bar' },
+	'C D' => { foo => 'bar' },
+	};
+bless $expected, 'CSS::Tiny';
+is_deeply( $Config, $expected, '->read returns expected structure' );
 
 # Add some stuff to the trivial stylesheet and check write_string() for it
 $Trivial->{H1} = { color => 'blue' };
@@ -94,6 +102,6 @@ ok( isa( $Read, 'HASH' ), '->read of what we wrote returns a hash reference' );
 ok( isa( $Read, 'CSS::Tiny' ), '->read of what we wrote returns a CSS::Tiny object' );
 
 # Check the structure of what we read back in
-### FIXME
+is_deeply( $Trivial, $Read, 'We get back what we wrote out' );		
 
 1;

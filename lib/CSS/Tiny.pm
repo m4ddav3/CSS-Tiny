@@ -13,7 +13,7 @@ use Fcntl ();
 # Set the VERSION
 use vars qw{$VERSION};
 BEGIN {
-	$VERSION = '0.2';
+	$VERSION = '0.3';
 }
 
 # Create the error string

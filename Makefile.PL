@@ -4,7 +4,7 @@ WriteMakefile(
 	'NAME'         => 'CSS::Tiny',
 	'VERSION_FROM' => 'lib/CSS/Tiny.pm',
 	'PREREQ_PM'    => {
-		Test::Simple => 0,
+		Test::More => 0,
 		FindBin      => 0,
 		Fcntl        => 0,
 	},	
