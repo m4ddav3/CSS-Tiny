@@ -110,7 +110,7 @@ use strict;
 
 use vars qw{$VERSION $errstr};
 BEGIN {
-	$VERSION = '1.08';
+	$VERSION = '1.09';
 	$errstr  = '';
 }
 
@@ -209,7 +209,7 @@ sub write {
 	my $file = shift or return $self->_error( 'No file name provided' );
 
 	# Write the file
-	open( CSS, '>', $file ) or return $self->_error( "Failed to open file '$file' for writing: $!" );
+	open( CSS, '>'. $file ) or return $self->_error( "Failed to open file '$file' for writing: $!" );
 	print CSS $self->write_string;
 	close( CSS );
 

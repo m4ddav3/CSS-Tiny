@@ -1,5 +1,9 @@
 Revision history for Perl extension CSS::Tiny
 
+1.09 Thu Mar 24 2005
+	- Lars Thegler noted that 3-argument open is not supported by 5.005.
+	  Added a small fix to change it to 2-argument open.
+
 1.08 Fri Feb 18 2005
 	- Adding XHTML support with the ->xhtml method
 	- Cleaning up the POD a little
