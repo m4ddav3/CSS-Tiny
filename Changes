@@ -1,5 +1,8 @@
 Revision history for Perl extension CSS::Tiny
 
+1.07 Tue Feb 15 2005
+	- Removing braindead Build.PL
+
 1.06 Sun Jan 16 2005
 	- Added ->html to generate CSS to dump on a HTML page
 	- Modernised the test suite and makefile

@@ -110,8 +110,8 @@ use strict;
 
 use vars qw{$VERSION $errstr};
 BEGIN {
-	$VERSION = 1.06;
-	$errstr = '';
+	$VERSION = '1.07';
+	$errstr  = '';
 }
 
 =pod
