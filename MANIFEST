@@ -1,0 +1,10 @@
+Changes
+LICENSE
+MANIFEST
+Makefile.PL
+README
+lib/CSS/Tiny.pm
+t/01_main.t
+t/test.css
+t/test2.css
+test.css

@@ -1,0 +1,117 @@
+NAME
+    CSS::Tiny - Read/Write .css files with as little code as possible
+
+SYNOPSIS
+        # In your .css file
+            H1 { color: blue }
+            H2 { color: red; font-family: Arial }
+            .this, .that { color: yellow }
+        
+        # In your program
+        use CSS::Tiny;
+
+            # Create a css stylesheet
+            my $CSS = CSS::Tiny->new();
+
+            # Open a css stylesheet
+            $CSS = CSS::Tiny->read( 'style.css' );
+
+        # Reading properties
+            my $header_color = $CSS->{H1}->{color};
+            my $header2_hashref = $CSS->{H2};
+            my $this_color = $CSS->{'.this'}->{color};
+            my $that_color = $CSS->{'.that'}->{color};
+
+        # Changing styles and properties
+            $CSS->{'.newstyle'} = { color => '#FFFFFF' }; # Add a style
+            $CSS->{H1}->{color} = 'black';                # Change a property
+            delete $CSS->{H2};                            # Delete a style
+
+        # Save a css stylesheet
+        $CSS->write( 'style.css' );
+
+DESCRIPTION
+    CSS::Tiny is a perl class to read and write .css stylesheets with as
+    little code as possible, reducing load time and memory overhead. CSS.pm
+    requires about 2.6 meg or ram to load, which is a large amount of
+    overhead if you only want to do trivial things. Memory usage is normally
+    scoffed at in Perl, but in my opinion should be at least kept in mind.
+
+    This module is primarily for reading and writing simple files, and
+    anything we write shouldn't need to have documentation/comments. If you
+    need something with more power, move up to CSS.pm.
+
+  CSS Feature Support
+    CSS::Tiny supports grouped styles of the form "this, that { color: blue
+    }" in reads correctly, ungrouping them into the hash structure. However,
+    it will not restore the grouping should you write the file back out. In
+    this case, an entry in the original file of the form
+
+    "H1, H2 { color: blue }"
+
+    would become
+
+    "H1 { color: blue } H2 { color: blue }"
+
+    CSS::Tiny handles nested styles of the form "P EM { color: red }" in
+    reads and writes correctly, making the property available in the form
+
+    "$CSS-"{'P EM'}->{color}>
+
+    CSS::Tiny ignores comments of the form "/* comment */" on read, however
+    these comments will not be written back out to the file.
+
+CSS FILE SYNTAX
+    Files are written in a highly human readable form, as follows
+
+        H1 {
+            color: blue;
+        }
+        .this {
+            color: red;
+            font-size: 10px;
+        }
+        P EM {
+            color: yellow;
+        }
+
+METHODS
+  new()
+    The constructor "new()" creates and returns an empty CSS::Tiny object.
+
+  read( $filename )
+    The "read()" constructor reads a css stylesheet, and returns a new
+    CSS::Tiny object containing the properties in the file. Returns the
+    object on success. Returns "undef" on error.
+
+  write()
+    The "write( $filename )" generates the stylesheet for the properties,
+    and writes it to disk. Returns true on success. Returns "undef" on
+    error.
+
+  write_string()
+    Generates the stylesheet for the object and returns it as a string.
+
+  errstr()
+    When an error occurs, you can retrieve the error message either from the
+    $CSS::Tiny::errstr variable, or using the "errstr()" method.
+
+SUPPORT
+    Contact the author
+
+AUTHOR
+            Adam Kennedy ( maintainer )
+            cpan@ali.as
+            http://ali.as/
+
+SEE ALSO
+    CSS, http://www.w3.org/TR/REC-CSS1
+
+COPYRIGHT
+    Copyright (c) 2002 Adam Kennedy. All rights reserved. This program is
+    free software; you can redistribute it and/or modify it under the same
+    terms as Perl itself.
+
+    The full text of the license can be found in the LICENSE file included
+    with this module.
+
