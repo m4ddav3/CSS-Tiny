@@ -4,7 +4,7 @@ use strict;
 
 use vars qw{$VERSION $errstr};
 BEGIN {
-	$VERSION = 1.02;
+	$VERSION = 1.03;
 	$errstr = '';
 }
 
@@ -48,7 +48,7 @@ sub read_string {
 		# Split in such a way as to support grouped styles
 		my $style = $1;
 		$style =~ s/\s{2,}/ /g;
-		my @styles = grep { /\S/ } split /\s*,\s*/, $style;
+		my @styles = grep { s/\s+/ /g; 1; } grep { /\S/ } split /\s*,\s*/, $style;
 		foreach ( @styles ) { $self->{$_} = {} }
 
 		# Split into properties
@@ -56,9 +56,9 @@ sub read_string {
 			unless ( /^\s*([\w._-]+)\s*:\s(.*?)\s*$/ ) {
 				return $self->_error( "Invalid or unexpected property '$_' in style '$style'" );
 			}
-			foreach ( @styles ) { $self->{$_}->{$1} = $2 }
+			foreach ( @styles ) { $self->{$_}->{lc $1} = $2 }
 		}
-	}	
+	}
 
 	$self
 }
@@ -87,7 +87,7 @@ sub write_string {
 	foreach my $style ( reverse sort keys %$self ) {
 		$contents .= "$style {\n";
 		foreach ( sort keys %{ $self->{$style} } ) {
-			$contents .= "\t$_: $self->{$style}->{$_};\n";
+			$contents .= "\t" . lc($_) . ": $self->{$style}->{$_};\n";
 		}
 		$contents .= "}\n";
 	}
@@ -115,27 +115,27 @@ CSS::Tiny - Read/Write .css files with as little code as possible
     H1 { color: blue }
     H2 { color: red; font-family: Arial }
     .this, .that { color: yellow }
-	
+    
     # In your program
     use CSS::Tiny;
-
+    
     # Create a css stylesheet
     my $CSS = CSS::Tiny->new();
-
+    
     # Open a css stylesheet
     $CSS = CSS::Tiny->read( 'style.css' );
-
+    
     # Reading properties
     my $header_color = $CSS->{H1}->{color};
     my $header2_hashref = $CSS->{H2};
     my $this_color = $CSS->{'.this'}->{color};
     my $that_color = $CSS->{'.that'}->{color};
-
+    
     # Changing styles and properties
     $CSS->{'.newstyle'} = { color => '#FFFFFF' }; # Add a style
     $CSS->{H1}->{color} = 'black';                # Change a property
     delete $CSS->{H2};                            # Delete a style
-
+    
     # Save a css stylesheet
     $CSS->write( 'style.css' );
 
@@ -176,7 +176,7 @@ these comments will not be written back out to the file.
 
 =head1 CSS FILE SYNTAX
 
-Files are written in a highly human readable form, as follows
+Files are written in a human orientated form, as follows:
 
     H1 {
         color: blue;
@@ -188,6 +188,17 @@ Files are written in a highly human readable form, as follows
     P EM {
     	color: yellow;
     }
+
+When reading and writing, all property descriptors, for example C<color>
+and C<font-size> in the example above, are converted to lower case. As an
+example, take the following CSS.
+
+    P {
+    	Font-Family: Verdana;
+    }
+
+To get the value C<'Verdana'> from the object $CSS, you should reference
+the key C<$CSS-E<gt>{P}-E<gt>{font-family}>.
 
 =head1 METHODS
 
@@ -236,7 +247,7 @@ L<CSS>, http://www.w3.org/TR/REC-CSS1
 
 =head1 COPYRIGHT
 
-Copyright (c) 2002 Adam Kennedy. All rights reserved.
+Copyright (c) 2002 - 2003 Adam Kennedy. All rights reserved.
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.
 

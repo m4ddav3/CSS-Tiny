@@ -6,27 +6,27 @@ SYNOPSIS
         H1 { color: blue }
         H2 { color: red; font-family: Arial }
         .this, .that { color: yellow }
-        
+    
         # In your program
         use CSS::Tiny;
-
+    
         # Create a css stylesheet
         my $CSS = CSS::Tiny->new();
-
+    
         # Open a css stylesheet
         $CSS = CSS::Tiny->read( 'style.css' );
-
+    
         # Reading properties
         my $header_color = $CSS->{H1}->{color};
         my $header2_hashref = $CSS->{H2};
         my $this_color = $CSS->{'.this'}->{color};
         my $that_color = $CSS->{'.that'}->{color};
-
+    
         # Changing styles and properties
         $CSS->{'.newstyle'} = { color => '#FFFFFF' }; # Add a style
         $CSS->{H1}->{color} = 'black';                # Change a property
         delete $CSS->{H2};                            # Delete a style
-
+    
         # Save a css stylesheet
         $CSS->write( 'style.css' );
 
@@ -62,7 +62,7 @@ DESCRIPTION
     these comments will not be written back out to the file.
 
 CSS FILE SYNTAX
-    Files are written in a highly human readable form, as follows
+    Files are written in a human orientated form, as follows:
 
         H1 {
             color: blue;
@@ -74,6 +74,17 @@ CSS FILE SYNTAX
         P EM {
             color: yellow;
         }
+
+    When reading and writing, all property descriptors, for example "color"
+    and "font-size" in the example above, are converted to lower case. As an
+    example, take the following CSS.
+
+        P {
+            Font-Family: Verdana;
+        }
+
+    To get the value 'Verdana' from the object $CSS, you should reference
+    the key "$CSS->{P}->{font-family}".
 
 METHODS
   new()
@@ -112,9 +123,9 @@ SEE ALSO
     CSS, http://www.w3.org/TR/REC-CSS1
 
 COPYRIGHT
-    Copyright (c) 2002 Adam Kennedy. All rights reserved. This program is
-    free software; you can redistribute it and/or modify it under the same
-    terms as Perl itself.
+    Copyright (c) 2002 - 2003 Adam Kennedy. All rights reserved. This
+    program is free software; you can redistribute it and/or modify it under
+    the same terms as Perl itself.
 
     The full text of the license can be found in the LICENSE file included
     with this module.
