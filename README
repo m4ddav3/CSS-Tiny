@@ -10,10 +10,10 @@ SYNOPSIS
         # In your program
         use CSS::Tiny;
     
-        # Create a css stylesheet
+        # Create a CSS stylesheet
         my $CSS = CSS::Tiny->new();
     
-        # Open a css stylesheet
+        # Open a CSS stylesheet
         $CSS = CSS::Tiny->read( 'style.css' );
     
         # Reading properties
@@ -27,8 +27,11 @@ SYNOPSIS
         $CSS->{H1}->{color} = 'black';                # Change a property
         delete $CSS->{H2};                            # Delete a style
     
-        # Save a css stylesheet
+        # Save a CSS stylesheet
         $CSS->write( 'style.css' );
+    
+        # Get the CSS as a <style>...</style> tag
+        $CSS->html;
 
 DESCRIPTION
     CSS::Tiny is a perl class to read and write .css stylesheets with as
@@ -94,12 +97,12 @@ METHODS
     The constructor "new" creates and returns an empty CSS::Tiny object.
 
   read $filename
-    The "read" constructor reads a css stylesheet, and returns a new
+    The "read" constructor reads a CSS stylesheet, and returns a new
     CSS::Tiny object containing the properties in the file. Returns the
     object on success. Returns "undef" on error.
 
   read_string $string
-    The "read_string" constructor reads a css stylesheet from a string.
+    The "read_string" constructor reads a CSS stylesheet from a string.
     Returns the object on success, and "undef" on error.
 
   write
@@ -109,6 +112,10 @@ METHODS
   write_string
     Generates the stylesheet for the object and returns it as a string.
 
+  html
+    The "html" method generates the CSS, but wrapped in a "style" html tag,
+    so that it can be dropped directly onto a HTML page.
+
   errstr
     When an error occurs, you can retrieve the error message either from the
     $CSS::Tiny::errstr variable, or using the "errstr" method.
@@ -116,20 +123,19 @@ METHODS
 SUPPORT
     Bugs should be reported via the CPAN bug tracker at
 
-      http://rt.cpan.org/NoAuth/ReportBug.html?Queue=CSS%3A%3ATiny
+    <http://rt.cpan.org/NoAuth/ReportBug.html?Queue=CSS-Tiny>
 
-    For other issues, contact the author
+    For other issues, or commercial enhancement or support, contact the
+    author.
 
 AUTHOR
-            Adam Kennedy ( maintainer )
-            cpan@ali.as
-            http://ali.as/
+    Adam Kennedy (Maintainer), <http://ali.as/>, cpan@ali.as
 
 SEE ALSO
-    CSS, http://www.w3.org/TR/REC-CSS1
+    CSS, <http://www.w3.org/TR/REC-CSS1>
 
 COPYRIGHT
-    Copyright 2002 - 2004 Adam Kennedy. All rights reserved. This program is
+    Copyright 2002 - 2005 Adam Kennedy. All rights reserved. This program is
     free software; you can redistribute it and/or modify it under the same
     terms as Perl itself.
 

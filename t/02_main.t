@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
 # Formal testing for CSS::Tiny
 
@@ -19,32 +19,9 @@ BEGIN {
 	}
 }
 
-use Test::More tests => 25;
-
-# Set up any needed globals
-use vars qw{$loaded};
-BEGIN {
-	$loaded = 0;
-	$| = 1;
-}
-
-
-
-
-# Check their perl version
-BEGIN {
-	ok( $] >= 5.005, "Your perl is new enough" );
-}
-	
-
-
-
-
-# Does the module load
-END { ok( 0, 'CSS::Tiny loads' ) unless $loaded; }
+use Test::More tests => 26;
 use CSS::Tiny;
-$loaded = 1;
-ok( 1, 'CSS::Tiny loads' );
+
 
 
 
@@ -142,5 +119,27 @@ END_CSS
 my $merged = CSS::Tiny->read_string( $mergable );
 ok( $merged, "CSS::Tiny reads mergable CSS ok" );
 is_deeply( $merged, { FOO => { test1 => 1, test2 => 2 } }, "Mergable CSS merges ok" );
+
+
+
+
+
+#####################################################################
+# Check the HTML generation
+
+my $HTML = CSS::Tiny->new();
+isa_ok( $HTML, 'CSS::Tiny' );
+is( $HTML->html, '', '->html returns empty string for empty stylesheet' );
+
+$HTML->{'.foo'}->{bar} = 1;
+is( $HTML->html . "\n", <<'END_HTML', '->html returns correct looking HTML' );
+<style type="text/css">
+<!--
+.foo {
+	bar: 1;
+}
+-->
+</style>
+END_HTML
 
 1;

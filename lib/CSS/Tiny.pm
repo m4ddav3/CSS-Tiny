@@ -1,108 +1,5 @@
 package CSS::Tiny;
 
-use strict;
-
-use vars qw{$VERSION $errstr};
-BEGIN {
-	$VERSION = 1.05;
-	$errstr = '';
-}
-
-# Create an empty object
-sub new { bless {}, shift }
-
-# Create an object from a file
-sub read {
-	my $class = shift;
-
-	# Check the file
-	my $file = shift or return $class->_error( 'You did not specify a file name' );
-	return $class->_error( "The file '$file' does not exist" ) unless -e $file;
-	return $class->_error( "'$file' is a directory, not a file" ) unless -f _;
-	return $class->_error( "Insufficient permissions to read '$file'" ) unless -r _;
-
-	# Read the file
-	local $/ = undef;
-	open( CSS, $file ) or return $class->_error( "Failed to open file '$file': $!" );
-	my $contents = <CSS>;
-	close( CSS );
-
-	$class->read_string( $contents )
-}
-
-# Create an object from a string
-sub read_string {
-	my $self = bless {}, shift;
-
-	# Flatten whitespace and remove /* comment */ style comments
-	my $string = shift;
-	$string =~ tr/\n\t/  /;
-	$string =~ s!/\*.*?\*\/!!g;
-
-	# Split into styles
-	foreach ( grep { /\S/ } split /(?<=\})/, $string ) {
-		unless ( /^\s*([^{]+?)\s*\{(.*)\}\s*$/ ) {
-			return $self->_error( "Invalid or unexpected style data '$_'" );
-		}
-
-		# Split in such a way as to support grouped styles
-		my $style = $1;
-		$style =~ s/\s{2,}/ /g;
-		my @styles = grep { s/\s+/ /g; 1; } grep { /\S/ } split /\s*,\s*/, $style;
-		foreach ( @styles ) { $self->{$_} ||= {} }
-
-		# Split into properties
-		foreach ( grep { /\S/ } split /\;/, $2 ) {
-			unless ( /^\s*([\w._-]+)\s*:\s*(.*?)\s*$/ ) {
-				return $self->_error( "Invalid or unexpected property '$_' in style '$style'" );
-			}
-			foreach ( @styles ) { $self->{$_}->{lc $1} = $2 }
-		}
-	}
-
-	$self
-}
-
-# Write an object to a file
-sub write {
-	my $self = shift;
-	my $file = shift or return $self->_error( 'No file name provided' );
-
-	# Write the file
-	open( CSS, '>', $file ) or return $self->_error( "Failed to open file '$file' for writing: $!" );
-	print CSS $self->write_string;
-	close( CSS );
-
-	1
-}
-
-# Generates the contents of a css file
-sub write_string {
-	my $self = shift;
-
-	# Iterate over the styles
-	# Note: We use 'reverse' in the sort to avoid a special case related
-	# to A:hover. See http://www.w3.org/TR/CSS2/selector.html#dynamic-pseudo-classes
-	my $contents = '';
-	foreach my $style ( reverse sort keys %$self ) {
-		$contents .= "$style {\n";
-		foreach ( sort keys %{ $self->{$style} } ) {
-			$contents .= "\t" . lc($_) . ": $self->{$style}->{$_};\n";
-		}
-		$contents .= "}\n";
-	}
-
-	$contents
-}
-
-# Error handling
-sub errstr { $errstr }
-sub _error { $errstr = $_[1]; undef }
-
-1;
-
-__END__
-
 =pod
 
 =head1 NAME
@@ -119,10 +16,10 @@ CSS::Tiny - Read/Write .css files with as little code as possible
     # In your program
     use CSS::Tiny;
     
-    # Create a css stylesheet
+    # Create a CSS stylesheet
     my $CSS = CSS::Tiny->new();
     
-    # Open a css stylesheet
+    # Open a CSS stylesheet
     $CSS = CSS::Tiny->read( 'style.css' );
     
     # Reading properties
@@ -136,8 +33,11 @@ CSS::Tiny - Read/Write .css files with as little code as possible
     $CSS->{H1}->{color} = 'black';                # Change a property
     delete $CSS->{H2};                            # Delete a style
     
-    # Save a css stylesheet
+    # Save a CSS stylesheet
     $CSS->write( 'style.css' );
+    
+    # Get the CSS as a <style>...</style> tag
+    $CSS->html;
 
 =head1 DESCRIPTION
 
@@ -204,56 +104,191 @@ the key C<$CSS-E<gt>{P}-E<gt>{font-family}>.
 
 =head1 METHODS
 
+=cut
+
+use strict;
+
+use vars qw{$VERSION $errstr};
+BEGIN {
+	$VERSION = 1.06;
+	$errstr = '';
+}
+
+=pod
+
 =head2 new
 
 The constructor C<new> creates and returns an empty CSS::Tiny object.
 
+=cut
+
+sub new { bless {}, shift }
+
+=pod
+
 =head2 read $filename
 
-The C<read> constructor reads a css stylesheet, and returns a new CSS::Tiny
+The C<read> constructor reads a CSS stylesheet, and returns a new CSS::Tiny
 object containing the properties in the file. Returns the object on success.
 Returns C<undef> on error.
 
+=cut
+
+sub read {
+	my $class = shift;
+
+	# Check the file
+	my $file = shift or return $class->_error( 'You did not specify a file name' );
+	return $class->_error( "The file '$file' does not exist" ) unless -e $file;
+	return $class->_error( "'$file' is a directory, not a file" ) unless -f _;
+	return $class->_error( "Insufficient permissions to read '$file'" ) unless -r _;
+
+	# Read the file
+	local $/ = undef;
+	open( CSS, $file ) or return $class->_error( "Failed to open file '$file': $!" );
+	my $contents = <CSS>;
+	close( CSS );
+
+	$class->read_string( $contents )
+}
+
+=pod
+
 =head2 read_string $string
 
-The C<read_string> constructor reads a css stylesheet from a string.
+The C<read_string> constructor reads a CSS stylesheet from a string.
 Returns the object on success, and C<undef> on error.
+
+=cut
+
+sub read_string {
+	my $self = bless {}, shift;
+
+	# Flatten whitespace and remove /* comment */ style comments
+	my $string = shift;
+	$string =~ tr/\n\t/  /;
+	$string =~ s!/\*.*?\*\/!!g;
+
+	# Split into styles
+	foreach ( grep { /\S/ } split /(?<=\})/, $string ) {
+		unless ( /^\s*([^{]+?)\s*\{(.*)\}\s*$/ ) {
+			return $self->_error( "Invalid or unexpected style data '$_'" );
+		}
+
+		# Split in such a way as to support grouped styles
+		my $style = $1;
+		$style =~ s/\s{2,}/ /g;
+		my @styles = grep { s/\s+/ /g; 1; } grep { /\S/ } split /\s*,\s*/, $style;
+		foreach ( @styles ) { $self->{$_} ||= {} }
+
+		# Split into properties
+		foreach ( grep { /\S/ } split /\;/, $2 ) {
+			unless ( /^\s*([\w._-]+)\s*:\s*(.*?)\s*$/ ) {
+				return $self->_error( "Invalid or unexpected property '$_' in style '$style'" );
+			}
+			foreach ( @styles ) { $self->{$_}->{lc $1} = $2 }
+		}
+	}
+
+	$self
+}
+
+=pod
 
 =head2 write
 
 The C<write $filename> generates the stylesheet for the properties, and 
 writes it to disk. Returns true on success. Returns C<undef> on error.
 
+=cut
+
+sub write {
+	my $self = shift;
+	my $file = shift or return $self->_error( 'No file name provided' );
+
+	# Write the file
+	open( CSS, '>', $file ) or return $self->_error( "Failed to open file '$file' for writing: $!" );
+	print CSS $self->write_string;
+	close( CSS );
+
+	1
+}
+
+=pod
+
 =head2 write_string
 
 Generates the stylesheet for the object and returns it as a string.
+
+=cut
+
+sub write_string {
+	my $self = shift;
+
+	# Iterate over the styles
+	# Note: We use 'reverse' in the sort to avoid a special case related
+	# to A:hover. See http://www.w3.org/TR/CSS2/selector.html#dynamic-pseudo-classes
+	my $contents = '';
+	foreach my $style ( reverse sort keys %$self ) {
+		$contents .= "$style {\n";
+		foreach ( sort keys %{ $self->{$style} } ) {
+			$contents .= "\t" . lc($_) . ": $self->{$style}->{$_};\n";
+		}
+		$contents .= "}\n";
+	}
+
+	$contents
+}
+
+=pod
+
+=head2 html
+
+The C<html> method generates the CSS, but wrapped in a C<style> html tag,
+so that it can be dropped directly onto a HTML page.
+
+=cut
+
+sub html {
+	my $css = $_[0]->write_string or return '';
+	"<style type=\"text/css\">\n<!--\n${css}-->\n</style>";
+}
+
+=pod
 
 =head2 errstr
 
 When an error occurs, you can retrieve the error message either from the
 C<$CSS::Tiny::errstr> variable, or using the C<errstr> method.
 
+=cut
+
+sub errstr { $errstr }
+sub _error { $errstr = $_[1]; undef }
+
+1;
+
+=pod
+
 =head1 SUPPORT
 
 Bugs should be reported via the CPAN bug tracker at
 
-  http://rt.cpan.org/NoAuth/ReportBug.html?Queue=CSS%3A%3ATiny
+L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=CSS-Tiny>
 
-For other issues, contact the author
+For other issues, or commercial enhancement or support, contact the author.
 
 =head1 AUTHOR
 
-        Adam Kennedy ( maintainer )
-        cpan@ali.as
-        http://ali.as/
+Adam Kennedy (Maintainer), L<http://ali.as/>, cpan@ali.as
 
 =head1 SEE ALSO
 
-L<CSS>, http://www.w3.org/TR/REC-CSS1
+L<CSS>, L<http://www.w3.org/TR/REC-CSS1>
 
 =head1 COPYRIGHT
 
-Copyright 2002 - 2004 Adam Kennedy. All rights reserved.
+Copyright 2002 - 2005 Adam Kennedy. All rights reserved.
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.
 

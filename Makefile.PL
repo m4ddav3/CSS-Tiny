@@ -1,16 +1,16 @@
-require 5.000;
-use ExtUtils::MakeMaker;
-WriteMakefile(
-	'NAME'         => 'CSS::Tiny',
-	'VERSION_FROM' => 'lib/CSS/Tiny.pm',
-	'PREREQ_PM'    => {
-		# Needed for testing
-		File::Spec => 0.82,
-		Test::More => 0,
-		FindBin    => 0,
-	},
-	($] >= 5.005) ? (
-		'AUTHOR'   => 'Adam Kennedy (cpan@ali.as)',
-		'ABSTRACT' => 'Read/Write .css stylesheets with as little code as possible',
-	) : (),
-);
+use inc::Module::Install;
+
+name          ( 'CSS-Tiny'                  );
+abstract      ( 'Read/Write .css stylesheets with as little code as possible' );
+author        ( 'Adam Kennedy<cpan@ali.as>' );
+version_from  ( 'lib/CSS/Tiny.pm'           );
+license       ( 'perl'                      );
+
+requires      ( 'perl'           => '5.005' );
+
+build_requires( 'File::Spec'     => '0.82'  );
+build_requires( 'Test::More'     => '0.47'  );
+
+auto_install();
+
+&WriteAll;

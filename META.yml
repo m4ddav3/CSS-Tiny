@@ -1,13 +1,15 @@
-# http://module-build.sourceforge.net/META-spec.html
-#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
-name:         CSS-Tiny
-version:      1.05
-version_from: lib/CSS/Tiny.pm
-installdirs:  site
-requires:
-    File::Spec:                    0.82
-    FindBin:                       0
-    Test::More:                    0
-
+name: CSS-Tiny
+version: 1.06
+abstract: Read/Write .css stylesheets with as little code as possible
+author: Adam Kennedy<cpan@ali.as>
+license: perl
 distribution_type: module
-generated_by: ExtUtils::MakeMaker version 6.16
+build_requires:
+  File::Spec: 0.82
+  Test::More: 0.47
+requires:
+  perl: 5.005
+no_index:
+  directory:
+    - inc
+generated_by: Module::Install version 0.36
