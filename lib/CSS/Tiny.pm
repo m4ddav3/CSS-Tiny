@@ -4,12 +4,12 @@ use strict;
 
 use vars qw{$VERSION $errstr};
 BEGIN {
-	$VERSION = 1.01;
+	$VERSION = 1.02;
 	$errstr = '';
 }
 
 # Create an empty object
-sub new { bless {}, $_[0] }
+sub new { bless {}, shift }
 
 # Create an object from a file
 sub read {
@@ -27,44 +27,40 @@ sub read {
 	my $contents = <CSS>;
 	close( CSS );
 
-	# Parse the file and return
-	return $class->read_string( $contents );
+	$class->read_string( $contents )
 }
 
 # Create an object from a string
 sub read_string {
-	my $class = shift;
-	my $string = shift;
+	my $self = bless {}, shift;
 
-	# Create the empty object
-	my $self = bless {}, $class;
-	
 	# Flatten whitespace and remove /* comment */ style comments
+	my $string = shift;
 	$string =~ tr/\n\t/  /;
 	$string =~ s!/\*.*?\*\/!!g;
 
 	# Split into styles
 	foreach ( grep { /\S/ } split /(?<=\})/, $string ) {
 		unless ( /^\s*([^{]+?)\s*\{(.*)\}\s*$/ ) {
-			return $class->_error( "Invalid or unexpected style data '$_'" );
+			return $self->_error( "Invalid or unexpected style data '$_'" );
 		}
-		
+
 		# Split in such a way as to support grouped styles
 		my $style = $1;
 		$style =~ s/\s{2,}/ /g;
 		my @styles = grep { /\S/ } split /\s*,\s*/, $style;
 		foreach ( @styles ) { $self->{$_} = {} }
-		
+
 		# Split into properties
 		foreach ( grep { /\S/ } split /\;/, $2 ) {
 			unless ( /^\s*([\w._-]+)\s*:\s(.*?)\s*$/ ) {
-				return $class->_error( "Invalid or unexpected property '$_' in style '$style'" );
+				return $self->_error( "Invalid or unexpected property '$_' in style '$style'" );
 			}
 			foreach ( @styles ) { $self->{$_}->{$1} = $2 }
 		}
 	}	
-	
-	return $self;
+
+	$self
 }
 
 # Write an object to a file
@@ -72,21 +68,18 @@ sub write {
 	my $self = shift;
 	my $file = shift or return $self->_error( 'No file name provided' );
 
-	# Get the contents of the file
-	my $contents = $self->write_string();
-	
-	# Write to the file
+	# Write the file
 	open ( CSS, ">$file" ) or return $self->_error( "Failed to open file '$file' for writing: $!" );
-	print CSS $contents;
+	print CSS $self->write_string;
 	close( CSS );
 
-	return 1;	
+	1
 }
 
 # Generates the contents of a css file
 sub write_string {
 	my $self = shift;
-	
+
 	# Iterate over the styles
 	# Note: We use 'reverse' in the sort to avoid a special case related
 	# to A:hover. See http://www.w3.org/TR/CSS2/selector.html#dynamic-pseudo-classes
@@ -98,13 +91,13 @@ sub write_string {
 		}
 		$contents .= "}\n";
 	}
-	
-	return $contents;
+
+	$contents
 }
 
 # Error handling
 sub errstr { $errstr }
-sub _error { $errstr = $_[1]; return undef }
+sub _error { $errstr = $_[1]; undef }
 
 1;
 
