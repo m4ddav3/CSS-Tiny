@@ -6,7 +6,7 @@ use strict;
 use lib '../../../modules'; # For development testing
 use lib '../lib'; # For installation testing
 use UNIVERSAL 'isa';
-use Test::More tests => 21;
+use Test::More tests => 23;
 
 # Set up any needed globals
 use vars qw{$loaded};
@@ -85,6 +85,10 @@ P EM {
 }
 END
 
+my $Read = CSS::Tiny->read_string( $string );
+ok( $Read, '>read_string() returns true' );
+is_deeply( $Read, $Trivial, '->read_string() returns expected' );
+
 my $generated = $Trivial->write_string();
 ok( length $generated, '->write_string returns something' );
 ok( $generated eq $string, '->write_string returns the correct file contents' );
@@ -95,7 +99,7 @@ ok( $rv, '->write returned true' );
 ok( -e 'test2.css', '->write actually created a file' );
 
 # Try to read the config back in
-my $Read = CSS::Tiny->read( './test2.css' );
+$Read = CSS::Tiny->read( './test2.css' );
 ok( $Read, '->read of what we wrote returns true' );
 ok( ref $Read, '->read of what we wrote returns a reference' );
 ok( isa( $Read, 'HASH' ), '->read of what we wrote returns a hash reference' );
@@ -104,4 +108,13 @@ ok( isa( $Read, 'CSS::Tiny' ), '->read of what we wrote returns a CSS::Tiny obje
 # Check the structure of what we read back in
 is_deeply( $Trivial, $Read, 'We get back what we wrote out' );		
 
+
+
+
+
+
+# Clean up
+END {
+	unlink './test2.css';
+}
 1;

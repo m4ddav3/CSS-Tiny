@@ -3,29 +3,29 @@ NAME
 
 SYNOPSIS
         # In your .css file
-            H1 { color: blue }
-            H2 { color: red; font-family: Arial }
-            .this, .that { color: yellow }
+        H1 { color: blue }
+        H2 { color: red; font-family: Arial }
+        .this, .that { color: yellow }
         
         # In your program
         use CSS::Tiny;
 
-            # Create a css stylesheet
-            my $CSS = CSS::Tiny->new();
+        # Create a css stylesheet
+        my $CSS = CSS::Tiny->new();
 
-            # Open a css stylesheet
-            $CSS = CSS::Tiny->read( 'style.css' );
+        # Open a css stylesheet
+        $CSS = CSS::Tiny->read( 'style.css' );
 
         # Reading properties
-            my $header_color = $CSS->{H1}->{color};
-            my $header2_hashref = $CSS->{H2};
-            my $this_color = $CSS->{'.this'}->{color};
-            my $that_color = $CSS->{'.that'}->{color};
+        my $header_color = $CSS->{H1}->{color};
+        my $header2_hashref = $CSS->{H2};
+        my $this_color = $CSS->{'.this'}->{color};
+        my $that_color = $CSS->{'.that'}->{color};
 
         # Changing styles and properties
-            $CSS->{'.newstyle'} = { color => '#FFFFFF' }; # Add a style
-            $CSS->{H1}->{color} = 'black';                # Change a property
-            delete $CSS->{H2};                            # Delete a style
+        $CSS->{'.newstyle'} = { color => '#FFFFFF' }; # Add a style
+        $CSS->{H1}->{color} = 'black';                # Change a property
+        delete $CSS->{H2};                            # Delete a style
 
         # Save a css stylesheet
         $CSS->write( 'style.css' );
@@ -83,6 +83,10 @@ METHODS
     The "read()" constructor reads a css stylesheet, and returns a new
     CSS::Tiny object containing the properties in the file. Returns the
     object on success. Returns "undef" on error.
+
+  read_string( $string )
+    The "read_string()" constructor reads a css stylesheet from a string.
+    Returns the object on success, and "undef" on error.
 
   write()
     The "write( $filename )" generates the stylesheet for the properties,

@@ -1,5 +1,12 @@
 Revision history for Perl extension CSS::Tiny
 
+1.0  Sat Dec 21 12:31:51 2002
+    - Removed locking code, and reliance on Fcntl
+    - Removed support for write modes
+    - Tightened up the code
+    - Added the read_string() method
+    - Simplified the file generator to save ops
+
 0.3  Mon Dec 09 00:27:01 2002
        - Upgraded tests to use Test::More and compare structs
 

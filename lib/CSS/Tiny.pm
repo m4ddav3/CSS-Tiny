@@ -1,73 +1,55 @@
 package CSS::Tiny;
 
-# This package reads and writes CSS files, using as little code as possible.
-# The module CSS.pm has a memory overhead of 2.6 meg, which is an amazing
-# amount of memory to use for something so simple.
-#
-# The metric used is the memory overhead of the module, excluding 
-# dependencies that are highly likely to be loaded anyway, such as File::Spec.
-
 use strict;
-use Fcntl ();
 
-# Set the VERSION
-use vars qw{$VERSION};
+use vars qw{$VERSION $errstr};
 BEGIN {
-	$VERSION = '0.3';
+	$VERSION = 1.0;
+	$errstr = '';
 }
 
-# Create the error string
-use vars qw{$errstr};
-BEGIN { $errstr = '' }
-
-# Create a new CSS::Tiny object
+# Create an empty object
 sub new { bless {}, $_[0] }
 
-# Reads a css file
+# Create an object from a file
 sub read {
-	$errstr = '';
 	my $class = shift;
 
 	# Check the file
 	my $file = shift or return $class->_error( 'You did not specify a file name' );
-	return $class->_error( "File '$file' does not exist" ) unless -e $file;
+	return $class->_error( "The file '$file' does not exist" ) unless -e $file;
 	return $class->_error( "'$file' is a directory, not a file" ) unless -f $file;
 	return $class->_error( "Insufficient permissions to read '$file'" ) unless -r $file;
 
-	# Create the base object
-	my $self = $class->new();
-	
-	# Open the file
-	sysopen( CSS, $file, Fcntl::O_RDONLY() ) 
-		or return $class->_error( "Failed to open file '$file': $!" );
-	flock( CSS, Fcntl::LOCK_SH() ) 
-		or return $class->_error( "Failed to get a read lock on the file '$file'" );
-	
-	# Read the contents of the file
-	my $contents;
-	{
-		local $/ = undef;
-		$contents = <CSS>;
-	}
-	
-	# Close the file
-	flock( CSS, Fcntl::LOCK_UN() )
-		or return $class->_error( "Failed to unlock the file '$file'" );	
-	close( CSS ) or $class->_error( "Failed to close the file '$file': $!" );
+	# Read the file
+	local $/ = undef;
+	open( CSS, $file ) or return $class->_error( "Failed to open file '$file': $!" );
+	my $contents = <CSS>;
+	close( CSS );
 
-	# Flatten whitespace
-	$contents =~ tr/\n\t/  /;
+	# Parse the file and return
+	return $class->read_string( $contents );
+}
+
+# Create an object from a string
+sub read_string {
+	my $class = shift;
+	my $string = shift;
+
+	# Create the empty object
+	my $self = bless {}, $class;
 	
-	# Remove C-style comments. e.g. /* comment */ 
-	$contents =~ s!/\*.*?\*\/!!g;
+	# Flatten whitespace and remove /* comment */ style comments
+	$string =~ tr/\n\t/  /;
+	$string =~ s!/\*.*?\*\/!!g;
 
 	# Split into styles
-	foreach ( grep { /\S/ } split /(?<=\})/, $contents ) {
+	foreach ( grep { /\S/ } split /(?<=\})/, $string ) {
 		unless ( /^\s*([^{]+?)\s*\{(.*)\}\s*$/ ) {
 			return $class->_error( "Invalid or unexpected style data '$_'" );
 		}
 		
-		# Split in such a way as to support style groupings
+		# Split in such a way as to support grouped styles
 		my $style = $1;
 		$style =~ s/\s{2,}/ /g;
 		my @styles = grep { /\S/ } split /\s*,\s*/, $style;
@@ -76,7 +58,7 @@ sub read {
 		# Split into properties
 		foreach ( grep { /\S/ } split /\;/, $2 ) {
 			unless ( /^\s*([\w._-]+)\s*:\s(.*?)\s*$/ ) {
-				return $class->_error( "Invalid or unexpected style data '$_' in style '$style'" );
+				return $class->_error( "Invalid or unexpected property '$_' in style '$style'" );
 			}
 			foreach ( @styles ) { $self->{$_}->{$1} = $2 }
 		}
@@ -85,31 +67,18 @@ sub read {
 	return $self;
 }
 
-# Write a css file
+# Write an object to a file
 sub write {
-	$errstr = '';
 	my $self = shift;
-	my $file = shift;
-	my $mode = shift || 0666;
-	unless ( $file ) {
-		return $self->_error( 'No file name provided to save to' );
-	}
+	my $file = shift or return $self->_error( 'No file name provided' );
 
 	# Get the contents of the file
 	my $contents = $self->write_string();
 	
-	# Open the file
-	sysopen ( CSS, $file, Fcntl::O_WRONLY()|Fcntl::O_CREAT()|Fcntl::O_TRUNC(), $mode )
-		or return $self->_error( "Failed to open file '$file' for writing: $!" );
-	flock( CSS, Fcntl::LOCK_EX() )
-		or return $self->_error( "Failed to get a write lock on the file '$file'" );
-	
+	# Write to the file
+	open ( CSS, ">$file" ) or return $self->_error( "Failed to open file '$file' for writing: $!" );
 	print CSS $contents;
-	
-	# Close the file
-	flock( CSS, Fcntl::LOCK_UN() )
-		or return $self->_error( "Failed to unlock the file '$file'" );	
-	close( CSS ) or $self->_error( "Failed to close the file '$file': $!" );
+	close( CSS );
 
 	return 1;	
 }
@@ -117,16 +86,18 @@ sub write {
 # Generates the contents of a css file
 sub write_string {
 	my $self = shift;
-	my @contents = ();
 	
 	# Iterate over the styles
+	my $contents = '';
 	foreach my $style ( sort keys %$self ) {
-		push @contents, "$style {";
-		push @contents, map { "\t$_: $self->{$style}->{$_};" } sort keys %{ $self->{$style} };
-		push @contents, "}";
+		$contents .= "$style {\n";
+		foreach ( sort keys %{ $self->{$style} } ) {
+			$contents .= "\t$_: $self->{$style}->{$_};\n";
+		}
+		$contents .= "}\n";
 	}
 	
-	return join '', map { "$_\n" } @contents;
+	return $contents;
 }
 
 # Error handling
@@ -146,29 +117,29 @@ CSS::Tiny - Read/Write .css files with as little code as possible
 =head1 SYNOPSIS
 
     # In your .css file
-	H1 { color: blue }
-	H2 { color: red; font-family: Arial }
-	.this, .that { color: yellow }
+    H1 { color: blue }
+    H2 { color: red; font-family: Arial }
+    .this, .that { color: yellow }
 	
     # In your program
     use CSS::Tiny;
 
-	# Create a css stylesheet
-	my $CSS = CSS::Tiny->new();
+    # Create a css stylesheet
+    my $CSS = CSS::Tiny->new();
 
-	# Open a css stylesheet
-	$CSS = CSS::Tiny->read( 'style.css' );
+    # Open a css stylesheet
+    $CSS = CSS::Tiny->read( 'style.css' );
 
     # Reading properties
-	my $header_color = $CSS->{H1}->{color};
-	my $header2_hashref = $CSS->{H2};
-	my $this_color = $CSS->{'.this'}->{color};
-	my $that_color = $CSS->{'.that'}->{color};
+    my $header_color = $CSS->{H1}->{color};
+    my $header2_hashref = $CSS->{H2};
+    my $this_color = $CSS->{'.this'}->{color};
+    my $that_color = $CSS->{'.that'}->{color};
 
     # Changing styles and properties
-	$CSS->{'.newstyle'} = { color => '#FFFFFF' }; # Add a style
-	$CSS->{H1}->{color} = 'black';                # Change a property
-	delete $CSS->{H2};                            # Delete a style
+    $CSS->{'.newstyle'} = { color => '#FFFFFF' }; # Add a style
+    $CSS->{H1}->{color} = 'black';                # Change a property
+    delete $CSS->{H2};                            # Delete a style
 
     # Save a css stylesheet
     $CSS->write( 'style.css' );
@@ -234,6 +205,11 @@ The constructor C<new()> creates and returns an empty CSS::Tiny object.
 The C<read()> constructor reads a css stylesheet, and returns a new CSS::Tiny
 object containing the properties in the file. Returns the object on success.
 Returns C<undef> on error.
+
+=head2 read_string( $string )
+
+The C<read_string()> constructor reads a css stylesheet from a string.
+Returns the object on success, and C<undef> on error.
 
 =head2 write()
 
