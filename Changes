@@ -1,5 +1,11 @@
 Revision history for Perl extension CSS::Tiny
 
+1.05 Wed Jul 14 2004
+	- Switched from open( FILE, ">filename" ) to open( FILE, '>', 'filename' )
+	- Using the -X _ method to file-test via cached stat information
+	- Added support for merging differently named properties in multiply listed styles
+	- Upgraded test script to hopefully work on Win32 now
+
 1.04 Wed Jan  7 2004
 	- Changed property parser to no longer require exactly one space
 	  after the colon seperate. Now allows zero or more spaces.

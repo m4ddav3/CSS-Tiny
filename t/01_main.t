@@ -3,10 +3,23 @@
 # Formal testing for CSS::Tiny
 
 use strict;
-use lib '../../modules'; # For development testing
-use lib '../lib'; # For installation testing
+use lib ();
 use UNIVERSAL 'isa';
-use Test::More tests => 23;
+use File::Spec ();
+BEGIN {
+	$| = 1;
+	unless ( $ENV{HARNESS_ACTIVE} ) {
+		require FindBin;
+		chdir ($FindBin::Bin = $FindBin::Bin); # Avoid a warning
+		lib->import( File::Spec->catdir(
+			File::Spec->updir,
+			File::Spec->updir,
+			'modules',
+			) );
+	}
+}
+
+use Test::More tests => 25;
 
 # Set up any needed globals
 use vars qw{$loaded};
@@ -45,7 +58,7 @@ ok( isa( $Trivial, 'CSS::Tiny' ), '->new returns a CSS::Tiny object' );
 ok( scalar keys %$Trivial == 0, '->new returns an empty object' );
 
 # Try to read in a config
-my $Config = CSS::Tiny->read( './test.css' );
+my $Config = CSS::Tiny->read( 'test.css' );
 ok( $Config, '->read returns true' );
 ok( ref $Config, '->read returns a reference' );
 ok( isa( $Config, 'HASH' ), '->read returns a hash reference' );
@@ -94,12 +107,17 @@ ok( length $generated, '->write_string returns something' );
 ok( $generated eq $string, '->write_string returns the correct file contents' );
 
 # Try to write a file
-my $rv = $Trivial->write( './test2.css' );
+my $rv = $Trivial->write( 'test2.css' );
 ok( $rv, '->write returned true' );
 ok( -e 'test2.css', '->write actually created a file' );
 
+# Clean up on unload
+END {
+	unlink 'test2.css';
+}
+
 # Try to read the config back in
-$Read = CSS::Tiny->read( './test2.css' );
+$Read = CSS::Tiny->read( 'test2.css' );
 ok( $Read, '->read of what we wrote returns true' );
 ok( ref $Read, '->read of what we wrote returns a reference' );
 ok( isa( $Read, 'HASH' ), '->read of what we wrote returns a hash reference' );
@@ -112,9 +130,17 @@ is_deeply( $Trivial, $Read, 'We get back what we wrote out' );
 
 
 
+#####################################################################
+# Check that two identical named styles overwrite-by-property, rather than
+# replace-by-style, so that styles are relatively correctly merged.
 
-# Clean up
-END {
-	unlink './test2.css';
-}
+my $mergable = <<'END_CSS';
+FOO {  test1: 1; }
+FOO {  test2: 2; }
+END_CSS
+
+my $merged = CSS::Tiny->read_string( $mergable );
+ok( $merged, "CSS::Tiny reads mergable CSS ok" );
+is_deeply( $merged, { FOO => { test1 => 1, test2 => 2 } }, "Mergable CSS merges ok" );
+
 1;

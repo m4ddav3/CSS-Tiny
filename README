@@ -39,7 +39,9 @@ DESCRIPTION
 
     This module is primarily for reading and writing simple files, and
     anything we write shouldn't need to have documentation/comments. If you
-    need something with more power, move up to CSS.pm.
+    need something with more power, move up to CSS.pm. With the increasing
+    complexity of CSS, this is becoming more common, but many situations can
+    still live with simple CSS files.
 
   CSS Feature Support
     CSS::Tiny supports grouped styles of the form "this, that { color: blue
@@ -58,11 +60,12 @@ DESCRIPTION
 
     "$CSS-"{'P EM'}->{color}>
 
-    CSS::Tiny ignores comments of the form "/* comment */" on read, however
-    these comments will not be written back out to the file.
+    CSS::Tiny ignores comments of the form "/* comment */" on read
+    correctly, however these comments will not be written back out to the
+    file.
 
 CSS FILE SYNTAX
-    Files are written in a human orientated form, as follows:
+    Files are written in a relatively human-orientated form, as follows:
 
         H1 {
             color: blue;

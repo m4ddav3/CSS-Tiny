@@ -4,7 +4,7 @@ use strict;
 
 use vars qw{$VERSION $errstr};
 BEGIN {
-	$VERSION = 1.04;
+	$VERSION = 1.05;
 	$errstr = '';
 }
 
@@ -18,8 +18,8 @@ sub read {
 	# Check the file
 	my $file = shift or return $class->_error( 'You did not specify a file name' );
 	return $class->_error( "The file '$file' does not exist" ) unless -e $file;
-	return $class->_error( "'$file' is a directory, not a file" ) unless -f $file;
-	return $class->_error( "Insufficient permissions to read '$file'" ) unless -r $file;
+	return $class->_error( "'$file' is a directory, not a file" ) unless -f _;
+	return $class->_error( "Insufficient permissions to read '$file'" ) unless -r _;
 
 	# Read the file
 	local $/ = undef;
@@ -49,7 +49,7 @@ sub read_string {
 		my $style = $1;
 		$style =~ s/\s{2,}/ /g;
 		my @styles = grep { s/\s+/ /g; 1; } grep { /\S/ } split /\s*,\s*/, $style;
-		foreach ( @styles ) { $self->{$_} = {} }
+		foreach ( @styles ) { $self->{$_} ||= {} }
 
 		# Split into properties
 		foreach ( grep { /\S/ } split /\;/, $2 ) {
@@ -69,7 +69,7 @@ sub write {
 	my $file = shift or return $self->_error( 'No file name provided' );
 
 	# Write the file
-	open ( CSS, ">$file" ) or return $self->_error( "Failed to open file '$file' for writing: $!" );
+	open( CSS, '>', $file ) or return $self->_error( "Failed to open file '$file' for writing: $!" );
 	print CSS $self->write_string;
 	close( CSS );
 
@@ -150,7 +150,9 @@ at least kept in mind.
 
 This module is primarily for reading and writing simple files, and anything
 we write shouldn't need to have documentation/comments. If you need something
-with more power, move up to CSS.pm.
+with more power, move up to CSS.pm. With the increasing complexity of CSS,
+this is becoming more common, but many situations can still live with simple
+CSS files.
 
 =head2 CSS Feature Support
 
@@ -171,12 +173,12 @@ reads and writes correctly, making the property available in the form
 
 C<$CSS->{'P EM'}->{color}>
 
-CSS::Tiny ignores comments of the form C</* comment */> on read, however
-these comments will not be written back out to the file.
+CSS::Tiny ignores comments of the form C</* comment */> on read correctly,
+however these comments will not be written back out to the file.
 
 =head1 CSS FILE SYNTAX
 
-Files are written in a human orientated form, as follows:
+Files are written in a relatively human-orientated form, as follows:
 
     H1 {
         color: blue;
