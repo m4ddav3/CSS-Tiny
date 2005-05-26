@@ -41,7 +41,7 @@ CSS::Tiny - Read/Write .css files with as little code as possible
 
 =head1 DESCRIPTION
 
-CSS::Tiny is a perl class to read and write .css stylesheets with as 
+C<CSS::Tiny> is a perl class to read and write .css stylesheets with as 
 little code as possible, reducing load time and memory overhead. CSS.pm
 requires about 2.6 meg or ram to load, which is a large amount of 
 overhead if you only want to do trivial things.
@@ -49,17 +49,18 @@ Memory usage is normally scoffed at in Perl, but in my opinion should be
 at least kept in mind.
 
 This module is primarily for reading and writing simple files, and anything
-we write shouldn't need to have documentation/comments. If you need something
-with more power, move up to CSS.pm. With the increasing complexity of CSS,
-this is becoming more common, but many situations can still live with simple
-CSS files.
+we write shouldn't need to have documentation/comments. If you need
+something with more power, move up to CSS.pm. With the increasing complexity
+of CSS, this is becoming more common, but many situations can still live
+with simple CSS files.
 
 =head2 CSS Feature Support
 
-CSS::Tiny supports grouped styles of the form C<this, that { color: blue }>
-correctly when reading, ungrouping them into the hash structure. However, it will
-not restore the grouping should you write the file back out. In this case, an
-entry in the original file of the form
+C<CSS::Tiny> supports grouped styles of the form
+C<this, that { color: blue }> correctly when reading, ungrouping them into
+the hash structure. However, it will not restore the grouping should you
+write the file back out. In this case, an entry in the original file of
+the form
 
     H1, H2 { color: blue }
 
@@ -68,13 +69,15 @@ would become
     H1 { color: blue }
     H2 { color: blue }
 
-CSS::Tiny handles nested styles of the form C<P EM { color: red }> in
-reads and writes correctly, making the property available in the form
+C<CSS::Tiny> handles nested styles of the form C<P EM { color: red }>
+in reads and writes correctly, making the property available in the
+form
 
     $CSS->{'P EM'}->{color}
 
-CSS::Tiny ignores comments of the form C</* comment */> on read correctly,
-however these comments will not be written back out to the file.
+C<CSS::Tiny> ignores comments of the form C</* comment */> on read
+correctly, however these comments will not be written back out to the
+file.
 
 =head1 CSS FILE SYNTAX
 
@@ -99,8 +102,8 @@ example, take the following CSS.
     	Font-Family: Verdana;
     }
 
-To get the value C<'Verdana'> from the object $CSS, you should reference
-the key C<$CSS-E<gt>{P}-E<gt>{font-family}>.
+To get the value C<'Verdana'> from the object C<$CSS>, you should
+reference the key C<$CSS-E<gt>{P}-E<gt>{font-family}>.
 
 =head1 METHODS
 
@@ -110,7 +113,7 @@ use strict;
 
 use vars qw{$VERSION $errstr};
 BEGIN {
-	$VERSION = '1.09';
+	$VERSION = '1.10';
 	$errstr  = '';
 }
 
@@ -118,7 +121,7 @@ BEGIN {
 
 =head2 new
 
-The constructor C<new> creates and returns an empty CSS::Tiny object.
+The constructor C<new> creates and returns an empty C<CSS::Tiny> object.
 
 =cut
 
@@ -128,8 +131,8 @@ sub new { bless {}, shift }
 
 =head2 read $filename
 
-The C<read> constructor reads a CSS stylesheet, and returns a new CSS::Tiny
-object containing the properties in the file.
+The C<read> constructor reads a CSS stylesheet, and returns a new
+C<CSS::Tiny> object containing the properties in the file.
 
 Returns the object on success, or C<undef> on error.
 
@@ -193,6 +196,33 @@ sub read_string {
 	}
 
 	$self
+}
+
+=pod
+
+=head2 clone
+
+The C<clone> method creates an identical copy of an existing C<CSS::Tiny>
+object.
+
+=cut
+
+BEGIN {
+	eval "use Clone 'clone';";
+	eval <<'END_METHOD' if $@;
+sub clone {
+	my $self = shift;
+	my $copy = $self->new;
+	foreach my $key ( keys %$self ) {
+		my $section = $self->{$key};
+		$copy->{$key} = {};
+		foreach ( keys %$section ) {
+			$copy->{$key}->{$_} = $section->{$_};
+		}
+	}
+	$copy;
+}
+END_METHOD
 }
 
 =pod

@@ -19,7 +19,7 @@ BEGIN {
 	}
 }
 
-use Test::More tests => 29;
+use Test::More tests => 31;
 use CSS::Tiny;
 
 
@@ -51,6 +51,11 @@ my $expected = {
 	};
 bless $expected, 'CSS::Tiny';
 is_deeply( $Config, $expected, '->read returns expected structure' );
+
+# Test clone
+my $copy = $Config->clone;
+isa_ok( $copy, 'CSS::Tiny' );
+is_deeply( $copy, $Config, '->clone works as expected' );
 
 # Add some stuff to the trivial stylesheet and check write_string() for it
 $Trivial->{H1} = { color => 'blue' };

@@ -1,5 +1,5 @@
 name: CSS-Tiny
-version: 1.09
+version: 1.10
 abstract: Read/Write .css stylesheets with as little code as possible
 author: Adam Kennedy<cpan@ali.as>
 license: perl
@@ -9,6 +9,8 @@ build_requires:
   Test::More: 0.47
 requires:
   perl: 5.005
+recommends:
+  Clone: 0.13
 no_index:
   directory:
     - inc

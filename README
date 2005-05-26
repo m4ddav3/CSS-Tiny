@@ -34,7 +34,7 @@ SYNOPSIS
         $CSS->html;
 
 DESCRIPTION
-    CSS::Tiny is a perl class to read and write .css stylesheets with as
+    "CSS::Tiny" is a perl class to read and write .css stylesheets with as
     little code as possible, reducing load time and memory overhead. CSS.pm
     requires about 2.6 meg or ram to load, which is a large amount of
     overhead if you only want to do trivial things. Memory usage is normally
@@ -47,8 +47,8 @@ DESCRIPTION
     still live with simple CSS files.
 
   CSS Feature Support
-    CSS::Tiny supports grouped styles of the form "this, that { color: blue
-    }" correctly when reading, ungrouping them into the hash structure.
+    "CSS::Tiny" supports grouped styles of the form "this, that { color:
+    blue }" correctly when reading, ungrouping them into the hash structure.
     However, it will not restore the grouping should you write the file back
     out. In this case, an entry in the original file of the form
 
@@ -59,12 +59,12 @@ DESCRIPTION
         H1 { color: blue }
         H2 { color: blue }
 
-    CSS::Tiny handles nested styles of the form "P EM { color: red }" in
+    "CSS::Tiny" handles nested styles of the form "P EM { color: red }" in
     reads and writes correctly, making the property available in the form
 
         $CSS->{'P EM'}->{color}
 
-    CSS::Tiny ignores comments of the form "/* comment */" on read
+    "CSS::Tiny" ignores comments of the form "/* comment */" on read
     correctly, however these comments will not be written back out to the
     file.
 
@@ -95,11 +95,11 @@ CSS FILE SYNTAX
 
 METHODS
   new
-    The constructor "new" creates and returns an empty CSS::Tiny object.
+    The constructor "new" creates and returns an empty "CSS::Tiny" object.
 
   read $filename
     The "read" constructor reads a CSS stylesheet, and returns a new
-    CSS::Tiny object containing the properties in the file.
+    "CSS::Tiny" object containing the properties in the file.
 
     Returns the object on success, or "undef" on error.
 
@@ -107,6 +107,10 @@ METHODS
     The "read_string" constructor reads a CSS stylesheet from a string.
 
     Returns the object on success, or "undef" on error.
+
+  clone
+    The "clone" method creates an identical copy of an existing "CSS::Tiny"
+    object.
 
   write
     The "write $filename" generates the stylesheet for the properties, and

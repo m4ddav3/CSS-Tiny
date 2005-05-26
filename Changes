@@ -1,5 +1,8 @@
 Revision history for Perl extension CSS::Tiny
 
+1.10 Thu May 26 2005
+	- Added the ->clone method
+
 1.09 Thu Mar 24 2005
 	- Lars Thegler noted that 3-argument open is not supported by 5.005.
 	  Added a small fix to change it to 2-argument open.
