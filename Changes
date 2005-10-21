@@ -1,5 +1,11 @@
 Revision history for Perl extension CSS::Tiny
 
+1.11 Sat Oct 22 2005
+	- Fixed a bug in the inline ->clone method that only runs
+	  when Clone is unavailable.
+	- Dialed back the File::Spec dep a little to prevent 5.6 people
+	  needing to upgraded when not needed.
+
 1.10 Thu May 26 2005
 	- Added the ->clone method
 

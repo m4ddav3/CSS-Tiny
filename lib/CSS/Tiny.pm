@@ -113,7 +113,7 @@ use strict;
 
 use vars qw{$VERSION $errstr};
 BEGIN {
-	$VERSION = '1.10';
+	$VERSION = '1.11';
 	$errstr  = '';
 }
 
@@ -212,7 +212,7 @@ BEGIN {
 	eval <<'END_METHOD' if $@;
 sub clone {
 	my $self = shift;
-	my $copy = $self->new;
+	my $copy = ref($self)->new;
 	foreach my $key ( keys %$self ) {
 		my $section = $self->{$key};
 		$copy->{$key} = {};
@@ -326,7 +326,7 @@ For other issues, or commercial enhancement or support, contact the author.
 
 =head1 AUTHOR
 
-Adam Kennedy (Maintainer), L<http://ali.as/>, cpan@ali.as
+Adam Kennedy E<lt>cpan@ali.asE<gt>, L<http://ali.as/>
 
 =head1 SEE ALSO
 

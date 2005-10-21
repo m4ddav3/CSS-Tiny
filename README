@@ -140,7 +140,7 @@ SUPPORT
     author.
 
 AUTHOR
-    Adam Kennedy (Maintainer), <http://ali.as/>, cpan@ali.as
+    Adam Kennedy <cpan@ali.as>, <http://ali.as/>
 
 SEE ALSO
     CSS, <http://www.w3.org/TR/REC-CSS1>, Config::Tiny
