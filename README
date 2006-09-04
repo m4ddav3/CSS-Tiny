@@ -140,15 +140,16 @@ SUPPORT
     author.
 
 AUTHOR
-    Adam Kennedy <cpan@ali.as>, <http://ali.as/>
+    Adam Kennedy <cpan@ali.as>
 
 SEE ALSO
-    CSS, <http://www.w3.org/TR/REC-CSS1>, Config::Tiny
+    CSS, <http://www.w3.org/TR/REC-CSS1>, Config::Tiny, <http://ali.as/>
 
 COPYRIGHT
-    Copyright 2002 - 2005 Adam Kennedy. All rights reserved. This program is
-    free software; you can redistribute it and/or modify it under the same
-    terms as Perl itself.
+    Copyright 2002 - 2006 Adam Kennedy. All rights reserved.
+
+    This program is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
 
     The full text of the license can be found in the LICENSE file included
     with this module.

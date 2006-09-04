@@ -1,17 +1,16 @@
-name: CSS-Tiny
-version: 1.11
-abstract: Read/Write .css stylesheets with as little code as possible
-author: Adam Kennedy<cpan@ali.as>
-license: perl
-distribution_type: module
-build_requires:
+abstract: Read/Write .css files with as little code as possible
+author: Adam Kennedy <cpan@ali.as>
+build_requires: 
   File::Spec: 0.80
   Test::More: 0.47
-requires:
-  perl: 5.005
-recommends:
-  Clone: 0.13
-no_index:
-  directory:
+distribution_type: module
+generated_by: Module::Install version 0.64
+license: perl
+name: CSS-Tiny
+no_index: 
+  directory: 
     - inc
-generated_by: Module::Install version 0.37
+    - t
+requires: 
+  perl: 5.005
+version: 1.14
