@@ -1,16 +1,14 @@
-abstract: Read/Write .css files with as little code as possible
-author: Adam Kennedy <cpan@ali.as>
-build_requires: 
-  File::Spec: 0.80
-  Test::More: 0.47
-distribution_type: module
-generated_by: Module::Install version 0.64
-license: perl
-name: CSS-Tiny
-no_index: 
-  directory: 
-    - inc
-    - t
-requires: 
-  perl: 5.005
-version: 1.14
+--- #YAML:1.0
+name:                CSS-Tiny
+version:             1.15
+abstract:            Read/Write .css files with as little code as possible
+license:             perl
+generated_by:        ExtUtils::MakeMaker version 6.32
+distribution_type:   module
+requires:     
+    Test::More:                    0.47
+meta-spec:
+    url:     http://module-build.sourceforge.net/META-spec-v1.2.html
+    version: 1.2
+author:
+    - Adam Kennedy <adamk@cpan.org>
