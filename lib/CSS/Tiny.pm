@@ -55,7 +55,7 @@ sub read_string {
 
 		# Split into properties
 		foreach ( grep { /\S/ } split /\;/, $properties ) {
-			unless ( /^\s*([\w._-]+)\s*:\s*(.*?)\s*$/ ) {
+			unless ( /^\s*(\*?[\w._-]+)\s*:\s*(.*?)\s*$/ ) {
 				return $self->_error( "Invalid or unexpected property '$_' in style '$style'" );
 			}
 			foreach ( @styles ) { $self->{$_}->{lc $1} = $2 }
