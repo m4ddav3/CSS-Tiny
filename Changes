@@ -1,4 +1,24 @@
-Revision history for Perl extension CSS::Tiny
+Revision history for Perl extension CSS-Tiny
+
+1.19 Fri  3 Sep 2010
+	- No functional changes
+	- Resolved RT #59037: CSS::Tiny reorders rules
+	- The use of Tie::IxHash to achieve ordering is now documented
+
+1.18 Fri  3 Sep 2010
+	- Resolved RT #60776: Parsing of multiple whitespace selectors
+	- Added test script specifically for RT regression tests
+
+1.17 Sun  4 Jul 2010
+	- Removed the use of Module::Install
+	- Allow read-string to be rerun again on an existing object,
+	  and thus also thus on tied objects (MPETERS)
+	- Moved POD after __END__ to reduce number of disk reads when parsing.
+	- Added support for running xt tests
+
+1.16 Fri  4 Jul 2008
+	- Upgrading to Module::Install 0.76
+	- Localising $@ during evals
 
 1.15 Thu  1 Nov 2007
 	- Moving from Module::Install to the tinier EU:MM
