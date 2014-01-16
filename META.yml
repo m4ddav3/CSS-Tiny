@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               CSS-Tiny
-version:            1.19
+version:            1.20
 abstract:           Read/Write .css files with as little code as possible
 author:
     - Adam Kennedy <adamk@cpan.org>
@@ -11,7 +11,7 @@ configure_requires:
 build_requires:
     Test::More:  0.47
 requires:
-    perl:  5.004
+    perl:  5.005
 resources:
     repository:  http://svn.ali.as/cpan/trunk/CSS-Tiny
 no_index:

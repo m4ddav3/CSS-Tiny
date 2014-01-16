@@ -1,5 +1,11 @@
 Revision history for Perl extension CSS-Tiny
 
+1.20 Thu 16 Jan 2014
+	- Modified FSF address (#73911)
+	- Now deals with properties starting with asterisk (#87261)
+	- Resolved xt/ tests failing due to incorrect declaration of
+	  compatible perl version. Now requires 5.005  (#90611)
+
 1.19 Fri  3 Sep 2010
 	- No functional changes
 	- Resolved RT #59037: CSS::Tiny reorders rules
